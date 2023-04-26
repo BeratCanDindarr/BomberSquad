@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public EnumsFolder.Bombs airPlaneBombData;
     #endregion
 
+    public GameObject airPlanePrefab;
+    
     #region PlayerController
     public FloatingJoystick joystick;
     #endregion

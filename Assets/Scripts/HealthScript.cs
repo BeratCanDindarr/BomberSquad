@@ -25,8 +25,8 @@ public class HealthScript : MonoBehaviour, IDamage
         {
             DetectEnemy.ObjectDestroyed(gameObject);
 
-            GameObject coin = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.COIN, (int)EnumsFolder.Coin.Coin1);
-            coin.transform.position = new Vector3(gameObject.transform.position.x+0.3f, gameObject.transform.position.y, gameObject.transform.position.z);
+            GameObject coin = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.COIN, (int)EnumsFolder.Coin.COIN1);
+            coin.transform.position = new Vector3(gameObject.transform.position.x+0.3f,0.1f, gameObject.transform.position.z);
             Destroy(gameObject);
 
             

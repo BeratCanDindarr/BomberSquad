@@ -5,10 +5,42 @@ using UnityEngine;
 public class EnemyScript : MonoBehaviour
 {
     // Start is called before the first frame update
-   
-    private void OnDisable()
+    Transform plane;
+    bool shooting = false;
+    Animator anim;
+    private void Start()
     {
-       
+        plane = GameManager.Instance.airPlanePrefab.transform;
+        anim = gameObject.GetComponent<Animator>();
     }
-    
+
+    private void Update()
+    {
+        float distance = Vector3.Distance(plane.position,transform.position);
+        if (distance>2)
+        {
+            return;
+        }
+        if (distance <= 2 && !shooting)
+        {
+
+            transform.LookAt(new Vector3(plane.position.x,0f,plane.position.z));
+            StartCoroutine(ShootAnim());
+        }
+        
+    }
+    IEnumerator ShootAnim()
+    {
+        shooting = true;
+        yield return new WaitForSeconds(5f);
+        anim.SetTrigger("Shoot");
+        shooting = false;
+    }
+    public void Shoot()
+    {
+        GameObject bullet = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.BULLET, (int)EnumsFolder.Bullet.RIFLEMAN);
+        bullet.transform.position = transform.position;
+        bullet.transform.LookAt(plane);
+        bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward*500);
+    }
 }

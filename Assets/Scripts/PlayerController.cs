@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
         playerRB = GetComponent<Rigidbody>();
         Attack += AirPlaneAttack;
         GetPlayerData();
+        gameManager.airPlanePrefab = gameObject;
     }
 
     void GetPlayerData() 

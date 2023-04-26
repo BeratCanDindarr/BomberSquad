@@ -10,6 +10,8 @@ public class EnumsFolder : MonoBehaviour
         BOMB,
         PLANE,
         COIN,
+        BULLET,
+        ENEMY,
         DEFAULT
     }
     public enum Partical
@@ -29,6 +31,15 @@ public class EnumsFolder : MonoBehaviour
     }
     public enum Coin
     {
-        Coin1,
+        COIN1,
+    }
+    public enum Bullet
+    {
+        RIFLEMAN,
+
+    }
+    public enum Enemy 
+    { 
+        RIFLEMAN,
     }
 }

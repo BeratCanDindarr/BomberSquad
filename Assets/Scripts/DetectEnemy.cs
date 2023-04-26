@@ -30,7 +30,7 @@ public class DetectEnemy : MonoBehaviour
         {
             GameManager.Instance.Money += 10;
             GameManager.Instance.SetMoney();
-            PoolManager.SetObject((int)EnumsFolder.PoolObjectName.COIN,(int)EnumsFolder.Coin.Coin1,other.gameObject);
+            PoolManager.SetObject((int)EnumsFolder.PoolObjectName.COIN,(int)EnumsFolder.Coin.COIN1,other.gameObject);
         }
     }
     
