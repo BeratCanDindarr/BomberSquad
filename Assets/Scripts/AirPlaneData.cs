@@ -2,13 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[CreateAssetMenu(menuName ="Create/NewAirPlaneData",fileName ="AirPlaneData")]
+
 public class AirPlaneData : ScriptableObject
 {
-    [Header("AirPlane Property")]
+    [System.Serializable]
+    public class AirPlanes
+    {
+        [Header("AirPlane Property")]
+        public string Name;
+        public float FireRate;
+        public bool IsPropellerActive;
+        public float MovementSpeed;
+        public float TurnSpeed;
+        public EnumsFolder.Plane AirPlanePrefabData;
+        public EnumsFolder.Bombs AirPlaneBombData;
+    }
     public string Name;
-    public float FireRate;
-    public bool IsPropellerActive;
-    public float MovementSpeed;
-    public float TurnSpeed;
-    public GameObject Prefabs;
+    public List<AirPlanes> airPlanes;
 }

@@ -5,22 +5,30 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Visible
     [Header("Plane Movement")]
-    public float movementSpeed;
-    public float turnSpeed;
+    [SerializeField] private float movementSpeed;
+    [SerializeField] private float turnSpeed;
+    [SerializeField] private float fireRate;
 
+    [Header("Bomb Name")]
+    [SerializeField] private EnumsFolder.Bombs BombPrefabs;
     [Header("Joystick")]
-    public FloatingJoystick joystick;
+    [SerializeField] private FloatingJoystick joystick;
     
     [Header("Plane Mesh")]
-    public GameObject planeBase;
+    [SerializeField]private GameObject planeBase;
+    #endregion
 
-    
+    #region Private 
+    private GameManager gameManager;
     private Rigidbody playerRB;
-
-
-    public GameObject BombPrefabs;
     private bool isAttacking = false;
+        #region movement 
+        private float horizontal;
+        private float vertical;
+        #endregion
+    #endregion
 
     #region Delegate
     public delegate void attack(bool actived);
@@ -28,15 +36,22 @@ public class PlayerController : MonoBehaviour
     #region Static Event
     public static attack Attack;
     #endregion
-    #region movement 
-    private float horizontal;
-    private float vertical;
-    #endregion
     
     void Start()
     {
+        gameManager = GameManager.Instance;
         playerRB = GetComponent<Rigidbody>();
         Attack += AirPlaneAttack;
+        GetPlayerData();
+    }
+
+    void GetPlayerData() 
+    {
+        movementSpeed = gameManager.movementSpeed;
+        turnSpeed = gameManager.turnSpeed;
+        BombPrefabs = gameManager.airPlaneBombData;
+        fireRate = gameManager.fireRate;
+        joystick = gameManager.joystick;
     }
     private void Update()
     {
@@ -124,7 +139,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator BombCreate()
     {
         
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(fireRate);
         
         SpawnBomb();
         
@@ -133,7 +148,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isAttacking)
         {
-            GameObject bomb = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.BOMB, (int)EnumsFolder.Bombs.BOMB1);
+            GameObject bomb = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.BOMB, (int)BombPrefabs);
             bomb.transform.position = gameObject.transform.position;
             bomb.SetActive(true);
             StartCoroutine(BombCreate());

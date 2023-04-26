@@ -16,5 +16,4 @@ MonoBehaviour:
   pools:
   - Name: BasicPlane
     Size: 1
-    Prefab: {fileID: 7562186567416533281, guid: 74ea5403a7b3954439054069beeb8951, type: 3}
-    Prefabs: []
+    Prefab: {fileID: 1298278753305632222, guid: 74ea5403a7b3954439054069beeb8951, type: 3}

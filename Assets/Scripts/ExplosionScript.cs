@@ -13,14 +13,19 @@ public class ExplosionScript : MonoBehaviour
         {
             Destroy(gameObject,0.5f);
             effect = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.PARTICALS, (int)EnumsFolder.Partical.BOMBEXPLOSION);
-            effect.transform.position = gameObject.transform.position;
-            effect.SetActive(true);
+            effect.transform.position = new Vector3(gameObject.transform.position.x, gameObject.transform.position.y+0.1f, gameObject.transform.position.z);
+            
+            
             StartCoroutine(WaitEndReturnObject());
             
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
-            Debug.LogError("Öldü");
+            var damageScript = other.gameObject.GetComponent<IDamage>();
+            if (damageScript != null)
+            {
+                damageScript.Damage(100);
+            }
         }
     }
     IEnumerator WaitEndReturnObject()
@@ -28,7 +33,7 @@ public class ExplosionScript : MonoBehaviour
 
 
         yield return new WaitForSeconds(0.2f);
-        effect.SetActive(false);
+        
         PoolManager.SetObject((int)EnumsFolder.PoolObjectName.PARTICALS, (int)EnumsFolder.Partical.BOMBEXPLOSION,effect);
         PoolManager.SetObject((int)EnumsFolder.PoolObjectName.BOMB, (int)bombID, effect);
         gameObject.SetActive(false);

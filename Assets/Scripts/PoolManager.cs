@@ -13,7 +13,7 @@ public class PoolManager: MonoBehaviour
     public static returnObject ReturnObject;
     public delegate void setObject(int PoolObjectNameID, int secondPoolObjecNameID, GameObject _object);
     public static setObject SetObject;
-    private void Start()
+    private void Awake()
     {
         //StartPoolCreate();
         CreatePoolList();
@@ -55,7 +55,7 @@ public class PoolManager: MonoBehaviour
     {
         for (int i = 0; i < size; i++)
         {
-            GameObject prefab = Instantiate(obj, gameObject.transform.position, gameObject.transform.rotation);
+            GameObject prefab = Instantiate(obj, gameObject.transform.position, obj.transform.rotation);
             prefab.transform.parent = gameObject.transform;
             prefab.SetActive(false);
             poolList[PoolObjectNameID][secondPoolObjecNameID].Add(prefab);
@@ -65,7 +65,6 @@ public class PoolManager: MonoBehaviour
     private GameObject ReturnGameObject(int PoolObjectNameID, int secondPoolObjecNameID)
     {
         
-        Debug.Log(PoolObjectNameID + " " + secondPoolObjecNameID);
         //GameObject returnGameObject = pools[PoolObjectNameID].pools[secondPoolObjecNameID].Prefabs[0];
         GameObject returnGameObject = poolList[PoolObjectNameID][secondPoolObjecNameID][0];
         if (returnGameObject == null)
@@ -74,12 +73,14 @@ public class PoolManager: MonoBehaviour
         }
         //pools[PoolObjectNameID].pools[secondPoolObjecNameID].Prefabs.RemoveAt(0);
         poolList[PoolObjectNameID][secondPoolObjecNameID].RemoveAt(0);
+        returnGameObject.SetActive(true);
         return returnGameObject;
     }
 
     private void SetGameObject(int PoolObjectNameID, int secondPoolObjecNameID, GameObject _object)
     {
         //pools[PoolObjectNameID].pools[secondPoolObjecNameID].Prefabs.Add(_object);
+        _object.SetActive(false);
         poolList[PoolObjectNameID][secondPoolObjecNameID].Add(_object);
         
     }

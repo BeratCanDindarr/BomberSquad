@@ -6,7 +6,7 @@ using UnityEngine;
 public class PoolScriptableObjects : ScriptableObject
 {
     [System.Serializable]
-    public struct pool
+    public class pool
     {
         public string Name;
         public int Size;
