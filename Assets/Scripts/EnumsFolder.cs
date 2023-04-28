@@ -42,4 +42,10 @@ public class EnumsFolder : MonoBehaviour
     { 
         RIFLEMAN,
     }
+
+    public enum PlaneLandingOrLiftingAnim
+    {
+        LANDING,
+        LIFTING
+    }
 }

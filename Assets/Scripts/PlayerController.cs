@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private GameManager gameManager;
     private Rigidbody playerRB;
     private bool isAttacking = false;
+    private bool isLifting = false;
         #region movement 
         private float horizontal;
         private float vertical;
@@ -31,10 +32,12 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Delegate
-    public delegate void attack(bool actived);
+    public delegate void attack(bool isActive);
+    public delegate void outsideTheBase(bool isActive);
     #endregion
     #region Static Event
     public static attack Attack;
+    public static outsideTheBase OutsideTheBase;
     #endregion
     
     void Start()
@@ -42,9 +45,11 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.Instance;
         playerRB = GetComponent<Rigidbody>();
         Attack += AirPlaneAttack;
+        OutsideTheBase += IsLifting;
         GetPlayerData();
-        gameManager.airPlanePrefab = gameObject;
     }
+
+   
 
     void GetPlayerData() 
     {
@@ -62,11 +67,24 @@ public class PlayerController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        MoveCharecter();
-        if (horizontal != 0 || vertical != 0)
-            rotateCharacter();
+        if (isLifting)
+        {
+
+            MoveCharecter();
+            if (horizontal != 0 || vertical != 0)
+                rotateCharacter();
+            else
+                PlaneBaseAnim(0);
+        }
         else
-            PlaneBaseAnim(0);
+        {
+            if (horizontal != 0 || vertical != 0)
+            {
+                LandingAndLifting.PlayerBaseAnim((int)EnumsFolder.PlaneLandingOrLiftingAnim.LIFTING);
+                
+                OutsideTheBase(true);
+            }
+        }
     }
 
     /*<summary> 
@@ -130,9 +148,9 @@ public class PlayerController : MonoBehaviour
         planeBase.transform.localRotation = Quaternion.Slerp(planeBase.transform.localRotation, Quaternion.Euler(Vector3.forward * angle), Time.fixedDeltaTime);
     }
 
-    private void AirPlaneAttack(bool actived)
+    private void AirPlaneAttack(bool isActive)
     {
-        isAttacking = actived;
+        isAttacking = isActive;
         if (isAttacking) 
             StartCoroutine(BombCreate());
 
@@ -159,5 +177,10 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         Attack -= AirPlaneAttack;
+        OutsideTheBase -= IsLifting;
+    }
+    private void IsLifting(bool isActive)
+    {
+        isLifting = isActive;
     }
 }

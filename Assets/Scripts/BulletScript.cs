@@ -13,6 +13,7 @@ public class BulletScript : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Debug.Log("Deneme");
             other.GetComponent<IDamage>().Damage(10);
         }
     }

@@ -18,8 +18,10 @@ public class GameManager : MonoBehaviour
     public EnumsFolder.Plane airPlanePrefabData;
     public EnumsFolder.Bombs airPlaneBombData;
     #endregion
-
+    public Transform BaseLocation;
     public GameObject airPlanePrefab;
+    public Cinemachine.CinemachineVirtualCamera cinemachineCamera;
+    
     
     #region PlayerController
     public FloatingJoystick joystick;
@@ -30,12 +32,31 @@ public class GameManager : MonoBehaviour
     public int Money { get { return money; } set { money = value; } }
     #endregion
 
+    public delegate void createdPlayer(Transform player);
+    public static createdPlayer CreatedPlayer;
+
+    public LandingAndLifting lifting;
+
     void Awake()
     {
         Instance = this;
         SetPlayerPlane((int)EnumsFolder.Plane.PLANE1);
+    }
+    private void Start()
+    {
+        PlayerSpawn();
         
     }
+
+    private void PlayerSpawn()
+    {
+        airPlanePrefab=PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.PLANE, (int)airPlanePrefabData);
+        airPlanePrefab.transform.position = BaseLocation.position;
+        cinemachineCamera.Follow = airPlanePrefab.transform;
+        //lifting.GetPlayerTransform(airPlanePrefab.transform);
+        CreatedPlayer(airPlanePrefab.transform);
+    }
+    
     void SetPlayerPlane(int EnumsFolderPlaneName)
     {
         var dataFile = airPlaneData[0].airPlanes[EnumsFolderPlaneName];

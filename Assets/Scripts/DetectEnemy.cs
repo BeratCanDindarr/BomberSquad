@@ -32,6 +32,11 @@ public class DetectEnemy : MonoBehaviour
             GameManager.Instance.SetMoney();
             PoolManager.SetObject((int)EnumsFolder.PoolObjectName.COIN,(int)EnumsFolder.Coin.COIN1,other.gameObject);
         }
+        if (other.CompareTag("Base"))
+        {
+            LandingAndLifting.PlayerBaseAnim((int)EnumsFolder.PlaneLandingOrLiftingAnim.LANDING);
+            PlayerController.OutsideTheBase(false);
+        }
     }
     
     private void OnTriggerExit(Collider other)

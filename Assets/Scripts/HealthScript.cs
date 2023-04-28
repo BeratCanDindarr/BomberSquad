@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class HealthScript : MonoBehaviour, IDamage
 {
     [SerializeField]private float maxHealth;
@@ -10,7 +10,10 @@ public class HealthScript : MonoBehaviour, IDamage
     private void Start()
     {
         currentHealth = maxHealth;
+       
     }
+
+   
 
     
     public void Damage(float damage)
@@ -26,12 +29,15 @@ public class HealthScript : MonoBehaviour, IDamage
             DetectEnemy.ObjectDestroyed(gameObject);
 
             GameObject coin = PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.COIN, (int)EnumsFolder.Coin.COIN1);
+            
+            //coin.transform.position = gameObject.transform.position;
+            
             coin.transform.position = new Vector3(gameObject.transform.position.x+0.3f,0.1f, gameObject.transform.position.z);
             Destroy(gameObject);
 
             
         }
     }
-   
+  
 
 }
