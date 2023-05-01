@@ -28,8 +28,7 @@ public class DetectEnemy : MonoBehaviour
         }
         if (other.gameObject.CompareTag("Coin"))
         {
-            GameManager.Instance.Money += 10;
-            GameManager.Instance.SetMoney();
+            GameManager.SetPlayerMoney(10);
             PoolManager.SetObject((int)EnumsFolder.PoolObjectName.COIN,(int)EnumsFolder.Coin.COIN1,other.gameObject);
         }
         if (other.CompareTag("Base"))

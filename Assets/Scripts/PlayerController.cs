@@ -20,24 +20,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField]private GameObject planeBase;
     #endregion
 
+    public int maxLevel;
+    public int money = 0;
     #region Private 
     private GameManager gameManager;
     private Rigidbody playerRB;
     private bool isAttacking = false;
+    private bool isAttackWaiting = false;
     private bool isLifting = false;
+    private bool waitLandingAnim = false;
         #region movement 
         private float horizontal;
         private float vertical;
-        #endregion
     #endregion
 
+    [Header("Plane Properties Level")]
+    [SerializeField]private int movementLevel =1;
+    [SerializeField] private int fireRateLevel = 1;
+    [SerializeField] private int damageLevel=1;
+
+    #endregion
+    private AirPlaneData.AirPlanes playerData;
     #region Delegate
     public delegate void attack(bool isActive);
     public delegate void outsideTheBase(bool isActive);
+    public delegate void powerUp(string name);
     #endregion
     #region Static Event
     public static attack Attack;
     public static outsideTheBase OutsideTheBase;
+    public static powerUp PowerUp;
     #endregion
     
     void Start()
@@ -45,31 +57,79 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.Instance;
         playerRB = GetComponent<Rigidbody>();
         Attack += AirPlaneAttack;
+        LandingAndLifting.PlayerBaseAnim += PlayerAnimWaiting;
         OutsideTheBase += IsLifting;
+        PowerUp += ChangeProperties;
+        playerData = GameManager.ReturnAirPlaneData();
         GetPlayerData();
+        CheckMoney();
+        CheckUpgradePanel();
+        maxLevel = 5;
     }
 
    
 
-    void GetPlayerData() 
+    private void GetPlayerData() 
     {
-        movementSpeed = gameManager.movementSpeed;
-        turnSpeed = gameManager.turnSpeed;
-        BombPrefabs = gameManager.airPlaneBombData;
-        fireRate = gameManager.fireRate;
-        joystick = gameManager.joystick;
+
+        movementSpeed = playerData.MovementSpeed;
+        turnSpeed = playerData.TurnSpeed;
+        BombPrefabs = playerData.AirPlaneBombData;
+        fireRate = playerData.FireRate;
+        joystick = GameManager.GetJoystick();
     }
     private void Update()
     {
         horizontal = joystick.Horizontal;
-        vertical = joystick.Vertical;   
+        vertical = joystick.Vertical;
+        
+
+
+    }
+    private void CheckUpgradePanel()
+    {
+        int result = movementLevel * 10;
+
+        if (movementLevel > maxLevel || money < result)
+        {
+            UIManager.UpgradeButtonChangeActive(0, false);
+        }
+        else
+        {
+            UIManager.UpgradeButtonChangeActive(0, true);
+        }
+        result = fireRateLevel * 10;
+        if (fireRateLevel > maxLevel || money < result)
+        {
+            UIManager.UpgradeButtonChangeActive(1, false);
+        }
+        else
+        {
+            UIManager.UpgradeButtonChangeActive(1, true);
+        }
+        result = damageLevel * 10;
+        if (damageLevel > maxLevel || money < result)
+        {
+            UIManager.UpgradeButtonChangeActive(2, false);
+        }
+        else
+        {
+            UIManager.UpgradeButtonChangeActive(2, true);
+        }
+
     }
     
     private void FixedUpdate()
     {
-        if (isLifting)
+        if (waitLandingAnim)
         {
-
+            PlaneBaseAnim(0);   
+            return;
+        }
+       
+        if (isLifting )
+        {
+            
             MoveCharecter();
             if (horizontal != 0 || vertical != 0)
                 rotateCharacter();
@@ -78,10 +138,10 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+
             if (horizontal != 0 || vertical != 0)
             {
                 LandingAndLifting.PlayerBaseAnim((int)EnumsFolder.PlaneLandingOrLiftingAnim.LIFTING);
-                
                 OutsideTheBase(true);
             }
         }
@@ -93,6 +153,7 @@ public class PlayerController : MonoBehaviour
      */
     private void MoveCharecter()
     {
+      
         playerRB.velocity = transform.forward * movementSpeed * Time.deltaTime;
     }
 
@@ -150,6 +211,10 @@ public class PlayerController : MonoBehaviour
 
     private void AirPlaneAttack(bool isActive)
     {
+        if (isAttackWaiting)
+        {
+            return;
+        }
         isAttacking = isActive;
         if (isAttacking) 
             StartCoroutine(BombCreate());
@@ -157,11 +222,13 @@ public class PlayerController : MonoBehaviour
     }
     IEnumerator BombCreate()
     {
-        
+        isAttackWaiting = true;
         yield return new WaitForSeconds(fireRate);
         
         SpawnBomb();
-        
+        isAttackWaiting = false;
+
+
     }
     private void SpawnBomb()
     {
@@ -173,14 +240,61 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(BombCreate());
         }
     }
+    private void IsLifting(bool isActive)
+    {
+        isLifting = isActive;
+        playerRB.isKinematic = !isActive;
+        UIManager.UpgradePanel(!isActive);
+    }
+    private void PlayerAnimWaiting(int PlayerLandingOrLifting)
+    {
+        CheckUpgradePanel();
+        CheckMoney();
+        if (PlayerLandingOrLifting == 0)
+        {
+            StartCoroutine(WaitLandingAnim());
+            
+        }
+    }
+    IEnumerator WaitLandingAnim()
+    {
+        waitLandingAnim = true;
+        yield return new WaitForSeconds(3f);
+        waitLandingAnim = false;
+    }
+    private void ChangeProperties(string changedProperties)
+    {
+        switch (changedProperties)
+        {
+            case "Movement":
+                GameManager.SetPlayerMoney(movementLevel*10 *-1);
+                movementLevel++;
+                break;
+            case "FireRate":
+                GameManager.SetPlayerMoney(fireRateLevel * 10 * -1);
+                fireRateLevel++;
+                break;
+            case "Damage":
+                GameManager.SetPlayerMoney(damageLevel * 10 * -1);
+                damageLevel++;
+                break;
+            default:
+                break;
+        }
+        CheckMoney();
+        CheckUpgradePanel();
+    }
+    private void CheckMoney()
+    {
+
+        money = GameManager.GetMoney();
+    }
 
     private void OnDestroy()
     {
         Attack -= AirPlaneAttack;
+        LandingAndLifting.PlayerBaseAnim -= PlayerAnimWaiting;
         OutsideTheBase -= IsLifting;
-    }
-    private void IsLifting(bool isActive)
-    {
-        isLifting = isActive;
+        PowerUp -= ChangeProperties;
     }
 }

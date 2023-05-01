@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public float turnSpeed;
     public EnumsFolder.Plane airPlanePrefabData;
     public EnumsFolder.Bombs airPlaneBombData;
+    private AirPlaneData.AirPlanes activeAirPlaneData;
     #endregion
     public Transform BaseLocation;
     public GameObject airPlanePrefab;
@@ -32,9 +33,18 @@ public class GameManager : MonoBehaviour
     public int Money { get { return money; } set { money = value; } }
     #endregion
 
+    #region Delegates
     public delegate void createdPlayer(Transform player);
     public static createdPlayer CreatedPlayer;
-
+    public delegate AirPlaneData.AirPlanes returnAirPlaneData();
+    public static returnAirPlaneData ReturnAirPlaneData;
+    public delegate FloatingJoystick getJoystick();
+    public static getJoystick GetJoystick;
+    public delegate int getMoney();
+    public static getMoney GetMoney;
+    public delegate void setMoney(int _money);
+    public static setMoney SetPlayerMoney;
+    #endregion
     public LandingAndLifting lifting;
 
     void Awake()
@@ -45,33 +55,58 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         PlayerSpawn();
-        
+        ReturnAirPlaneData += ReturnPlayerData;
+        GetJoystick += ReturnJoystick;
+        GetMoney += ReturnMoney;
+        SetPlayerMoney += SetMoney;
     }
 
     private void PlayerSpawn()
     {
         airPlanePrefab=PoolManager.ReturnObject((int)EnumsFolder.PoolObjectName.PLANE, (int)airPlanePrefabData);
         airPlanePrefab.transform.position = BaseLocation.position;
-        cinemachineCamera.Follow = airPlanePrefab.transform;
+        CameraController.AddCameraFollow(airPlanePrefab);
         //lifting.GetPlayerTransform(airPlanePrefab.transform);
         CreatedPlayer(airPlanePrefab.transform);
     }
     
     void SetPlayerPlane(int EnumsFolderPlaneName)
     {
-        var dataFile = airPlaneData[0].airPlanes[EnumsFolderPlaneName];
-        planename = dataFile.Name;
-        fireRate = dataFile.FireRate;
-        isPropellerActive = dataFile.IsPropellerActive;
-        movementSpeed = dataFile.MovementSpeed;
-        turnSpeed = dataFile.TurnSpeed;
-        airPlanePrefabData = dataFile.AirPlanePrefabData;
-        airPlaneBombData = dataFile.AirPlaneBombData;
+        activeAirPlaneData = airPlaneData[0].airPlanes[EnumsFolderPlaneName];
+        planename = activeAirPlaneData.Name;
+        fireRate = activeAirPlaneData.FireRate;
+        isPropellerActive = activeAirPlaneData.IsPropellerActive;
+        movementSpeed = activeAirPlaneData.MovementSpeed;
+        turnSpeed = activeAirPlaneData.TurnSpeed;
+        airPlanePrefabData = activeAirPlaneData.AirPlanePrefabData;
+        airPlaneBombData = activeAirPlaneData.AirPlaneBombData;
     }
-    public void SetMoney()
+    AirPlaneData.AirPlanes ReturnPlayerData()
     {
+
+        return activeAirPlaneData;
+    }
+    
+    private void SetMoney(int _money)
+    {
+        money += _money;
         UIManager.SetMoneyPanel(Money);
     }
+    public int ReturnMoney()
+    {
+        return Money;
+    }
+    private FloatingJoystick ReturnJoystick()
+    {
+        return joystick;
+    }
+    
+    private void OnDestroy()
+    {
+        ReturnAirPlaneData -= ReturnPlayerData;
+        GetJoystick -= ReturnJoystick;
+        GetMoney -= ReturnMoney;
+        SetPlayerMoney -= SetMoney;
+    }
 
-   
 }
