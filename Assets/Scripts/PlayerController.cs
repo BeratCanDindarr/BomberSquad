@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed;
     [SerializeField] private float turnSpeed;
     [SerializeField] private float fireRate;
+    [SerializeField] private float damage = 100;
 
     [Header("Bomb Name")]
     [SerializeField] private EnumsFolder.Bombs BombPrefabs;
@@ -45,11 +46,13 @@ public class PlayerController : MonoBehaviour
     public delegate void attack(bool isActive);
     public delegate void outsideTheBase(bool isActive);
     public delegate void powerUp(string name);
+    public delegate float getDamage();
     #endregion
     #region Static Event
     public static attack Attack;
     public static outsideTheBase OutsideTheBase;
     public static powerUp PowerUp;
+    public static getDamage GetDamage;
     #endregion
     
     void Start()
@@ -60,10 +63,12 @@ public class PlayerController : MonoBehaviour
         LandingAndLifting.PlayerBaseAnim += PlayerAnimWaiting;
         OutsideTheBase += IsLifting;
         PowerUp += ChangeProperties;
+        GetDamage += ReturnDamage;
         playerData = GameManager.ReturnAirPlaneData();
         GetPlayerData();
         CheckMoney();
         CheckUpgradePanel();
+        damage = 100;
         maxLevel = 5;
     }
 
@@ -269,20 +274,27 @@ public class PlayerController : MonoBehaviour
             case "Movement":
                 GameManager.SetPlayerMoney(movementLevel*10 *-1);
                 movementLevel++;
+                movementSpeed++;
                 break;
             case "FireRate":
                 GameManager.SetPlayerMoney(fireRateLevel * 10 * -1);
                 fireRateLevel++;
+                fireRate -=   0.1f;
                 break;
             case "Damage":
                 GameManager.SetPlayerMoney(damageLevel * 10 * -1);
                 damageLevel++;
+                damage += damageLevel * 10;
                 break;
             default:
                 break;
         }
         CheckMoney();
         CheckUpgradePanel();
+    }
+    private float ReturnDamage()
+    {
+        return damage;
     }
     private void CheckMoney()
     {
@@ -296,5 +308,6 @@ public class PlayerController : MonoBehaviour
         LandingAndLifting.PlayerBaseAnim -= PlayerAnimWaiting;
         OutsideTheBase -= IsLifting;
         PowerUp -= ChangeProperties;
+        GetDamage -= ReturnDamage;
     }
 }

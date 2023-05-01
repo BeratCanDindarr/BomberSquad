@@ -5,10 +5,18 @@ using UnityEngine;
 public class ExplosionScript : MonoBehaviour
 {
     public EnumsFolder.Bombs bombID;
+
     private GameObject effect;
+    private float damage;
+    private void Start()
+    {
+        damage = PlayerController.GetDamage();
+    }
     
     private void OnTriggerEnter(Collider other)
     {
+        damage = PlayerController.GetDamage();
+        Debug.LogError(damage);
         if (other.gameObject.CompareTag("Ground"))
         {
             Destroy(gameObject,0.5f);
@@ -24,7 +32,7 @@ public class ExplosionScript : MonoBehaviour
             var damageScript = other.gameObject.GetComponent<IDamage>();
             if (damageScript != null)
             {
-                damageScript.Damage(100);
+                damageScript.Damage(damage);
             }
         }
     }
@@ -35,8 +43,8 @@ public class ExplosionScript : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
         
         PoolManager.SetObject((int)EnumsFolder.PoolObjectName.PARTICALS, (int)EnumsFolder.Partical.BOMBEXPLOSION,effect);
-        PoolManager.SetObject((int)EnumsFolder.PoolObjectName.BOMB, (int)bombID, effect);
-        gameObject.SetActive(false);
+        PoolManager.SetObject((int)EnumsFolder.PoolObjectName.BOMB, (int)bombID, gameObject);
+        
 
     }
    

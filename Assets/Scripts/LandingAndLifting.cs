@@ -45,6 +45,7 @@ public class LandingAndLifting : MonoBehaviour
         if (isLanding== 0)
         {
             player.transform.DORotate(gameObject.transform.forward , 1f);
+            collider.enabled = false;
             
         }
         else
@@ -56,7 +57,7 @@ public class LandingAndLifting : MonoBehaviour
     IEnumerator ColiderActivate()
     {
         collider.enabled = false;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(6f);
         collider.enabled = true;
     }
 
