@@ -18,6 +18,7 @@ public class EnumsFolder : MonoBehaviour
     {
         BOMBEXPLOSION,
         NUKE,
+        SMOKE,
     }
     public enum Plane
     {

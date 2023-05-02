@@ -15,6 +15,7 @@ public class AirPlaneData : ScriptableObject
         public bool IsPropellerActive;
         public float MovementSpeed;
         public float TurnSpeed;
+        public int Health;
         public EnumsFolder.Plane AirPlanePrefabData;
         public EnumsFolder.Bombs AirPlaneBombData;
     }

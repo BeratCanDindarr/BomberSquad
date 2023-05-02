@@ -57,7 +57,7 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
-        gameManager = GameManager.Instance;
+        //gameManager = GameManager.Instance;
         playerRB = GetComponent<Rigidbody>();
         Attack += AirPlaneAttack;
         LandingAndLifting.PlayerBaseAnim += PlayerAnimWaiting;

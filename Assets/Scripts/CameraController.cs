@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
     public static addCameraFollow AddCameraFollow;
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         LandingAndLifting.PlayerBaseAnim += ChangeCamera;
         AddCameraFollow += AddLiftingCameraFolowObject;

@@ -17,8 +17,9 @@ MonoBehaviour:
   - Name: Bomb Explosion
     Size: 4
     Prefab: {fileID: 6307412469317066359, guid: 4824d07b1de951c4e8996ab242678b85, type: 3}
-    Prefabs: []
   - Name: 'Nuke '
     Size: 1
     Prefab: {fileID: 2935336118442423347, guid: 6d7afbb4c70f766498db22de04c81477, type: 3}
-    Prefabs: []
+  - Name: Smoke
+    Size: 1
+    Prefab: {fileID: 3621959011550510312, guid: 89b8ef53e8e4d0b4f9938ddf967fa09d, type: 3}

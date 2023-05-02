@@ -19,5 +19,6 @@ MonoBehaviour:
     IsPropellerActive: 1
     MovementSpeed: 10
     TurnSpeed: 1
+    Health: 100
     AirPlanePrefabData: 0
     AirPlaneBombData: 0

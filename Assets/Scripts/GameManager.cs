@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Instance;
+    //public static GameManager Instance;
     [Header("AirPlane Properties")]
     
     public List<AirPlaneData> airPlaneData;
@@ -44,12 +44,14 @@ public class GameManager : MonoBehaviour
     public static getMoney GetMoney;
     public delegate void setMoney(int _money);
     public static setMoney SetPlayerMoney;
+    public delegate Transform getPlayerPrefab();
+    public static getPlayerPrefab GetPlayerPrefab;
     #endregion
     public LandingAndLifting lifting;
 
     void Awake()
     {
-        Instance = this;
+        //Instance = this;
         SetPlayerPlane((int)EnumsFolder.Plane.PLANE1);
     }
     private void Start()
@@ -59,6 +61,7 @@ public class GameManager : MonoBehaviour
         GetJoystick += ReturnJoystick;
         GetMoney += ReturnMoney;
         SetPlayerMoney += SetMoney;
+        GetPlayerPrefab += ReturnPlayer;
     }
 
     private void PlayerSpawn()
@@ -100,13 +103,17 @@ public class GameManager : MonoBehaviour
     {
         return joystick;
     }
-    
+    private Transform ReturnPlayer()
+    {
+        return airPlanePrefab.transform;
+    }
     private void OnDestroy()
     {
         ReturnAirPlaneData -= ReturnPlayerData;
         GetJoystick -= ReturnJoystick;
         GetMoney -= ReturnMoney;
         SetPlayerMoney -= SetMoney;
+        GetPlayerPrefab -= ReturnPlayer;
     }
 
 }

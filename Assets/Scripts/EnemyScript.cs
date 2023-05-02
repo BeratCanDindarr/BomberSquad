@@ -16,7 +16,7 @@ public class EnemyScript : MonoBehaviour
     }
     private void GetPlayerData()
     {
-        plane = GameManager.Instance.airPlanePrefab.transform;
+        plane = GameManager.GetPlayerPrefab();
     }
 
     private void Update()

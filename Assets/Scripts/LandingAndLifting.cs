@@ -20,7 +20,7 @@ public class LandingAndLifting : MonoBehaviour
         PlayerBaseAnim += PlayerSetTransform;
         BaseTransform[0] = gameObject.transform.position;
         BaseTransform[1] = new Vector3(gameObject.transform.position.x, 0.759f, gameObject.transform.position.z + 0.4f);
-        gameManager = GameManager.Instance;
+        //gameManager = GameManager.Instance;
         collider = gameObject.GetComponent<BoxCollider>();
         //collider.enabled = false;
 
